@@ -13,6 +13,8 @@
 int standardOut = -1;
 int standardIn = -1;
 
+char copy_cmd[CMDLINE_MAX];
+
 // dont change
 void execute_code(char *args[]) {
         int exit_val = 0;
@@ -26,6 +28,7 @@ void execute_code(char *args[]) {
                 }
                 exit(1);
         }
+        fprintf(stderr, "+ completed '%s' [%d]\n", copy_cmd, EXIT_SUCCESS);                    
         exit(0);
 }
 
@@ -249,18 +252,23 @@ int main(void) {
                 if (nl)
                         *nl = '\0';
 
+                
+                strcpy(copy_cmd, cmd);
+
                 add_spaces(cmd);
                 
                 get_arguments(cmd, args, &num_arguments);
                 /* Builtin command */
                 if (!strcmp(cmd, "exit")) {
                         fprintf(stderr, "Bye...\n");
+                        fprintf(stderr, "+ completed '%s' [%d]", copy_cmd, EXIT_SUCCESS);
                         break;
                 }
                 else if (strcmp(args[0], "cd") == 0 && args[1] != NULL) {
                         char *direc = args[1];
                         if (chdir(direc) == -1)
                                 perror("chdir");
+                        fprintf(stderr, "+ completed '%s' [%d]", copy_cmd, EXIT_SUCCESS);
                 }
                 
                 /* Regular command */
@@ -317,6 +325,5 @@ int main(void) {
                 num_arguments = 0;
                 memset(args, 0, sizeof(args));
         }
-        fprintf(stderr, "+ completed '%s' [%d]", cmd, EXIT_SUCCESS);
         return EXIT_SUCCESS;
 };
