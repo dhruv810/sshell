@@ -255,7 +255,6 @@ int main(void) {
                 /* Builtin command */
                 if (!strcmp(cmd, "exit")) {
                         fprintf(stderr, "Bye...\n");
-                        exit(0);
                         break;
                 }
                 else if (strcmp(args[0], "cd") == 0 && args[1] != NULL) {
@@ -318,6 +317,6 @@ int main(void) {
                 num_arguments = 0;
                 memset(args, 0, sizeof(args));
         }
-
+        fprintf(stderr, "+ completed '%s' [%d]", cmd, EXIT_SUCCESS);
         return EXIT_SUCCESS;
 };
