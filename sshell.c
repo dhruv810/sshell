@@ -237,8 +237,10 @@ int directory_stack(char *dirs[], char *cmd, char *location, int *num_dirs) {
                 }
         }
         else if (strcmp(cmd, "popd") == 0) {
-                if (*num_dirs == 1)
-                        return 0;
+                if (*num_dirs == 1) {
+                        printf("%s\n", getcwd(NULL, CMDLINE_MAX));
+                        return 1;
+                }
                 *num_dirs -= 1;
                 dirs[*num_dirs] = NULL;
                 if (chdir(dirs[*num_dirs - 1]) == -1) {
@@ -312,7 +314,7 @@ int main(void) {
                 }
                 
                 if ((strcmp(args[0], "pushd") == 0 && args[1] != NULL) || strcmp(args[0], "popd") == 0 || strcmp(args[0], "dirs") == 0) {
-                        directory_stack(dirs, args[0], args[1], &num_dirs);
+                        retval = directory_stack(dirs, args[0], args[1], &num_dirs);
                 }
                 
 
