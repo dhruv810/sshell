@@ -268,7 +268,9 @@ int main(void) {
                         char *direc = args[1];
                         if (chdir(direc) == -1)
                                 perror("chdir");
-                        fprintf(stderr, "+ completed '%s' [%d]", copy_cmd, EXIT_SUCCESS);
+                        
+                        printf("%s\n", getcwd(NULL, CMDLINE_MAX));
+                        // fprintf(stderr, "+ completed '%s' [%d]", copy_cmd, EXIT_SUCCESS);
                 }
                 
                 /* Regular command */
