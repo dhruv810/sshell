@@ -16,19 +16,18 @@ int standardIn = -1;
 char copy_cmd[CMDLINE_MAX];
 
 // dont change
-void execute_code(char *args[]) {
+void execute_code(char *args[]) {              
         int exit_val = 0;
         if (strcmp(args[0], "pwd") == 0) {
-                printf("%s\n", getcwd(NULL, CMDLINE_MAX));
+                printf("%s\n", getcwd(NULL, CMDLINE_MAX));   
         }
         else {
-                exit_val = execvp(args[0], args);
+                exit_val = execvp(args[0], args);                    
                 if (exit_val == -1) {
                         perror("execvp");
                 }
                 exit(1);
-        }
-        fprintf(stderr, "+ completed '%s' [%d]\n", copy_cmd, EXIT_SUCCESS);                    
+        }                  
         exit(0);
 }
 
@@ -317,8 +316,8 @@ int main(void) {
                                 exit(0);
                         }
                 }
-                fprintf(stdout, "Return status value for '%s': %d\n",
-                        cmd, retval);
+                //fprintf(stdout, "Return status value for '%s': %d\n", cmd, retval);
+                fprintf(stderr, "+ completed '%s' [%d]\n", cmd, ! retval);
 
                 memset(commands, 0, sizeof(commands));
                 is_out_redirect = -1;
