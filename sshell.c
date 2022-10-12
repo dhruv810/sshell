@@ -255,6 +255,7 @@ int main(void) {
                 /* Builtin command */
                 if (!strcmp(cmd, "exit")) {
                         fprintf(stderr, "Bye...\n");
+                        exit(0);
                         break;
                 }
                 else if (strcmp(args[0], "cd") == 0 && args[1] != NULL) {
