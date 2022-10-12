@@ -218,6 +218,39 @@ void add_spaces(char *cmd) {
     strcpy(cmd, new_str);
 }
 
+int directory_stack(char *dirs[], char *cmd, char *location, int *num_dirs) {      
+        if (strcmp(cmd, "pushd") == 0) {
+                if (chdir(location) != -1) {
+                        dirs[*num_dirs] = getcwd(dirs[*num_dirs], CMDLINE_MAX);
+                        *num_dirs += 1;
+                        return 1;
+                }
+                else {
+                        perror("chdir");
+                }
+        }
+        else if (strcmp(cmd, "dirs") == 0) {
+                int i = *num_dirs - 1;
+                while (i >= 0) {
+                        printf("%s\n", dirs[i]);
+                        i--;
+                }
+        }
+        else if (strcmp(cmd, "popd") == 0) {
+                if (*num_dirs == 1)
+                        return 0;
+                *num_dirs -= 1;
+                dirs[*num_dirs] = NULL;
+                if (chdir(dirs[*num_dirs - 1]) == -1) {
+                        return 1;
+                }
+                else {
+                        perror("chdir");
+                }
+        }
+        return 0;
+}
+
 int main(void) {
         char cmd[CMDLINE_MAX];
         char *commands[CMDLINE_MAX] = {};
@@ -226,10 +259,18 @@ int main(void) {
         int num_pipe = 0;
         int num_arguments = 0;
         char *args[CMDLINE_MAX] = {};
+        char *dirs[CMDLINE_MAX] = {};
+        int num_dirs = 0;
 
         while (1) {
                 char *nl;
                 int retval = 0;
+
+                if (num_dirs == 0) {
+                        dirs[num_dirs] = getcwd(dirs[num_dirs], CMDLINE_MAX);
+                        printf("dirs[0] = %s\n", dirs[num_dirs]);
+                        num_dirs++;
+                }
 
                 /* Print prompt */
                 printf("sshell$ ");
@@ -255,6 +296,7 @@ int main(void) {
                 add_spaces(cmd);
                 
                 get_arguments(cmd, args, &num_arguments);
+
                 /* Builtin command */
                 if (!strcmp(cmd, "exit")) {
                         fprintf(stderr, "Bye...\n");
@@ -270,6 +312,11 @@ int main(void) {
                         // fprintf(stderr, "+ completed '%s' [%d]", copy_cmd, EXIT_SUCCESS);
                 }
                 
+                if ((strcmp(args[0], "pushd") == 0 && args[1] != NULL) || strcmp(args[0], "popd") == 0 || strcmp(args[0], "dirs") == 0) {
+                        directory_stack(dirs, args[0], args[1], &num_dirs);
+                }
+                
+
                 /* Regular command */
                 pid_t pid = fork();
                 if (pid != 0) {
