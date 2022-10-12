@@ -268,7 +268,6 @@ int main(void) {
 
                 if (num_dirs == 0) {
                         dirs[num_dirs] = getcwd(dirs[num_dirs], CMDLINE_MAX);
-                        printf("dirs[0] = %s\n", dirs[num_dirs]);
                         num_dirs++;
                 }
 
