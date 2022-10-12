@@ -17,14 +17,12 @@ char copy_cmd[CMDLINE_MAX];
 
 // dont change
 void execute_code(char *args[]) {              
-        int exit_val = 0;
         if (strcmp(args[0], "pwd") == 0) {
                 printf("%s\n", getcwd(NULL, CMDLINE_MAX));   
         }
-        else {
-                exit_val = execvp(args[0], args);                    
-                if (exit_val == -1) {
-                        perror("execvp");
+        else {                 
+                if (execvp(args[0], args) == -1) {
+                        //perror("execvp");
                 }
                 exit(1);
         }                  
@@ -266,7 +264,7 @@ int main(void) {
                 else if (strcmp(args[0], "cd") == 0 && args[1] != NULL) {
                         char *direc = args[1];
                         if (chdir(direc) == -1)
-                                perror("chdir");
+                                // perror("chdir");
                         
                         printf("%s\n", getcwd(NULL, CMDLINE_MAX));
                         // fprintf(stderr, "+ completed '%s' [%d]", copy_cmd, EXIT_SUCCESS);
@@ -277,7 +275,8 @@ int main(void) {
                 if (pid != 0) {
                         int status;
                         waitpid(pid, &status, 0);
-                        retval = WIFEXITED(status);
+                        retval = ! WIFEXITED(status);
+                        fprintf(stderr, "+ completed '%s' [%d]\n", cmd, retval);
                 }
                 else {
                         num_pipe = check_for_pipe(cmd, commands);
@@ -317,7 +316,6 @@ int main(void) {
                         }
                 }
                 //fprintf(stdout, "Return status value for '%s': %d\n", cmd, retval);
-                fprintf(stderr, "+ completed '%s' [%d]\n", cmd, ! retval);
 
                 memset(commands, 0, sizeof(commands));
                 is_out_redirect = -1;
