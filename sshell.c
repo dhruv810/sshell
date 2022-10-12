@@ -24,9 +24,9 @@ void execute_code(char *args[]) {
                 if (exit_val == -1) {
                         perror("execvp");
                 }
-                exit(exit_val);
+                exit(1);
         }
-        exit(exit_val);
+        exit(0);
 }
 
 // dont change
@@ -304,18 +304,18 @@ int main(void) {
                         }
                         else {
                                 pipe_handler(commands, num_pipe, is_out_redirect);
-                                exit(1);
+                                exit(0);
                         }
                 }
                 fprintf(stdout, "Return status value for '%s': %d\n",
                         cmd, retval);
 
-                memset(commands, 0, CMDLINE_MAX);
+                memset(commands, 0, sizeof(commands));
                 is_out_redirect = -1;
                 is_in_redirect = -1;
                 num_pipe = 0;
                 num_arguments = 0;
-                memset(args, 0, CMDLINE_MAX);
+                memset(args, 0, sizeof(args));
         }
 
         return EXIT_SUCCESS;
