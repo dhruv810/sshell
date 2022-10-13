@@ -13,12 +13,13 @@ We have watched many videos to finish the project, but we are going to link only
 
 We tested the Makefile on the source code, so it was easy to implemnt since there were not any errors in code.
 
+---
 
-For the nect part, we needed to extract arguments from string command. For this part we used on line c compiler to test that part individually and later implemented on the project.
+For the next part, we needed to extract arguments from string command. For which we used online C compiler to test that part individually and later implemented on the project.
 
 - https://www.onlinegdb.com/online_c_compiler
 
-We wanted to make sure that our code is working before implementing on the project. So, we used online compiler to test many functions of the project. Many of which are the following,
+We wanted to make sure that our code is working before implementing it on the project. So, we used online compiler to test many functions before writing on the project. Some of which are following
 
 - get_arguments
 - check_for_pipe
@@ -27,7 +28,9 @@ We wanted to make sure that our code is working before implementing on the proje
 - add_spaces
 - directory_stack
 
-Pase 0 to 3, were easy implement given that provided link has all the information we needed. But after that we had to change design many time.
+---
+
+Pase 0 to 3, were easy implement given that provided links has all the information we needed. But after that we had to change design many time.
 
 At low-level we were able to implement all functions easily but at high-level there was some issues.
 
@@ -45,12 +48,10 @@ We are using the check_for_output_redirection, check_for_input_redirection funct
 
 At the end of the project, we realized that `get_arguments()` could be used to check command for input and/or output redirection but because of time constraints we could not implement it.
 
-- PIPE
-
 Pipe was the hadest part in this project. We had to use lecture slides and more than 10 youtube videos. But the one that was helpful is listed below.
 
-- <a https://www.youtube.com/watch?v=Mqb2dVRe0uo  /></a>
+- https://www.youtube.com/watch?v=Mqb2dVRe0uo
 
-We started pipe by splitting the command from '|' and saving it in an array. Then we wrote a code that is similar to the one in video to execute each command in a loop.
+We started pipe by splitting the command from '|' and saving it in an array. Then we wrote a code that is similar to the one in the video to execute each command in a loop. Code had more detailed explanations.
 
 At the end of the project, while writing the report we went of the assignment and realized that we didnt manage the error as we supposed to. Because of limited time we could't implement it.
