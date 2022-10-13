@@ -30,13 +30,20 @@ Pase 0 to 3, were easy implement given that provided link has all the informatio
 
 At low-level we were able to implement all functions easily but at high-level there was some issues.
 
-Writing the get_arguments() was complicated but once we found the following way to split the command, we finished it in couple minutes. It is an amazing website that allowed us to write and test the function on their website.
+Writing the `get_arguments()` was complicated but once we found the following way to split the command, we finished it in couple minutes. It is an amazing website that allowed us to write and test the function on their website.
 
 - https://www.educative.io/answers/splitting-a-string-using-strtok-in-c
 
-Phase 4:
+Later we used the same methods to implement check_for_pipe check_for_output_redirection, and check_for_input_redirection functions. 
 
-At phase 4 we decided to add spaces arround the '>' so we can use the get_arguments() function without changing it.
+At phase 4 we decided to add spaces arround the '>' so we can use the `get_arguments()` function without changing it.
 
-we need to reconfigure the code to make sure that it recognices the output redirection even if it is not surrounded by spaces. That's when we thought about add_spaces() function. Because of this function we could use get_arguments() without changing it. Also we used it to check command for input and/or output redirection.
+we need to reconfigure the code to make sure that it recognices the output redirection even if it is not surrounded by spaces. That's when we thought about `add_spaces()` function. Because of this function we could use `get_arguments()` without changing it.
+
+We are using the check_for_output_redirection, check_for_input_redirection function to check for input and output redirection.
+
+At the end of the project, we realized that `get_arguments()` could be used to check command for input and/or output redirection but because of time constraints we could not implement it.
+
+
+
 
