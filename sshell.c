@@ -92,32 +92,36 @@ void get_arguments(char *cmd, char *args[], int *number_of_arguments) {
         *number_of_arguments = i;
 };
 
-// modify
+// cmd with pipes will be executed here
 void pipe_handler(char * commands[], int num_pipe, int output_redirection) {
-        int cmd_num = 0;
-        int read_pip = -1;
-        int write_pip = -1;
+        int cmd_num = 0;        // index of current command being run
+        int read_pipe = -1;      // read and write pip
+        int write_pipe = -1;
         int previous_read_pipe = -1;            // readpipe for next command
         pid_t pid;
+
+        // used this video to understand the following process
+        // https://www.youtube.com/watch?v=Mqb2dVRe0uo
         while (commands[cmd_num] != NULL) {
+                // getting args from command.
                 int num_args = 0;
                 char *args[CMDLINE_MAX] = {};
                 get_arguments(commands[cmd_num], args, &num_args);
-               
+                
                 int pip[2];
-                if((num_pipe > 0) & (cmd_num != num_pipe))
-                {
+                if((num_pipe > 0) & (cmd_num != num_pipe)) {
+                        // not going create pipe for the last command
                         pipe(pip);
-                        read_pip = pip[0];
-                        write_pip = pip[1];
+                        read_pipe = pip[0];
+                        write_pipe = pip[1];
                 }
 
                 pid = fork();
-                if (pid < 0) {
-                        printf("Could not create chile process");
-                }
                 if (pid == 0) {
                         if (cmd_num == num_pipe && output_redirection == 1) {
+                                // read_pipe for current commnad is write_pipe for previous cmd
+                                // but for the last command out_pipe is stdout
+                                // but if output_redirection is true then changing stdout to given file
                                 for (int i = 0; i < num_args; i++) {
                                         if ((strcmp(args[i], ">") == 0) && (args[i+1] != NULL)) {
                                                 int fd = open(args[i+1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -129,34 +133,38 @@ void pipe_handler(char * commands[], int num_pipe, int output_redirection) {
                                         }
                                 }
                         }
-                        // redirect output to outpipe
-                        else if (write_pip != -1) {
-                                dup2(write_pip, STDOUT_FILENO);
+                        // changing stdout to write_pip only if it is it exist
+                        else if (write_pipe != -1) {
+                                dup2(write_pipe, STDOUT_FILENO);
                         }
                         
-                        // redirect input from previous_read_pipe
+                        // changing stdin to read_pipe only if it is it exist
+                        // for the first command there is no pipe to read from
+                        // for next commands, chile process will set read_pipe to previous_read_pipe
+                        // so when child process is parent process, it can read from the read_pipe
                         if(previous_read_pipe != -1) {
                                 dup2(previous_read_pipe, STDIN_FILENO);
                         }
-                        
+                        // executing the comamand
                         execute_code(args);
-                        
+                        // exiting the parent process
                         exit(0);
                 }
                 else {
+                        // closing pipes if it is open
                         if(previous_read_pipe != -1) {
                                 close(previous_read_pipe);
                         }
-                        
-                        //redirect output to outpipe
-                        if(write_pip != -1) {
-                                close(write_pip);
+                        if(write_pipe != -1) {
+                                close(write_pipe);
                         }
-                        previous_read_pipe = read_pip;
+                        // setting previous_read_pipe to read_pipe
+                        // so during next iteration, function will read read_pipe
+                        previous_read_pipe = read_pipe;
                 }
                 cmd_num++;
-                
         } 
+        // waiting for child processs to end
         waitpid(pid, NULL, 0);
 };
 
