@@ -42,16 +42,25 @@ Later we used the same methods to implement `check_for_pipe`, `check_for_output_
 
 At phase 4 we decided to add spaces arround the '>' so we can use the `get_arguments()` function without changing it.
 
-we need to reconfigure the code to make sure that it recognices the output redirection even if it is not surrounded by spaces. That's when we thought about `add_spaces()` function. Because of this function we could use `get_arguments()` without changing it.
+we need to reconfigure the code to make sure that it recognices the output redirection even if it is not surrounded by spaces. That's when we thought about `add_spaces()` function. Because of this function we are able use `get_arguments()` without changing it.
 
-We are using the check_for_output_redirection, check_for_input_redirection function to check for input and output redirection.
+---
 
-At the end of the project, we realized that `get_arguments()` could be used to check command for input and/or output redirection but because of time constraints we could not implement it.
+We are using the `check_for_output_redirection`, `check_for_input_redirection` function to check for input and output redirection.
+
+In these function, we divide the command by the '<' and '>', and if we get more than one string that mean command has a output redirection and/or input redirection.
+
+
+**At the end of the project, we realized that `get_arguments()` could be used to check command for input and/or output redirection but because of time constraints we could not implement it.**
+
+---
 
 Pipe was the hadest part in this project. We had to use lecture slides and more than 10 youtube videos. But the one that was helpful is listed below.
 
 - https://www.youtube.com/watch?v=Mqb2dVRe0uo
 
 We started pipe by splitting the command from '|' and saving it in an array. Then we wrote a code that is similar to the one in the video to execute each command in a loop. Code had more detailed explanations.
+
+---
 
 At the end of the project, while writing the report we went of the assignment and realized that we didnt manage the error as we supposed to. Because of limited time we could't implement it.
