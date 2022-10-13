@@ -6,6 +6,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <termios.h>
 
 #define CMDLINE_MAX 512
@@ -30,7 +31,7 @@ void execute_code(char *args[]) {
                 // executing code      
                 // managing errors    
                 if (execvp(args[0], args) == -1) {
-                        //perror("execvp");
+                        perror("execvp");
                 }
                 exit(1);
         }                  
@@ -43,6 +44,10 @@ void redirect_output(char *args[], int number_of_arguments) {
                 if ((strcmp(args[i], ">") == 0) && (args[i+1] != NULL)) {
                         // using this from lecture slides, syscalls.pdf - pg.31
                         int fd = open(args[i+1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                        // if fails to open, display error
+                        if (fd == -1) {
+                                printf("Error: cannot open output file\n");
+                        }
                         // storing STDOUT_FILENO so later reset it to whatever it was
                         dup2(fd, STDOUT_FILENO);
                         standardOut = dup(STDOUT_FILENO);       
@@ -50,6 +55,10 @@ void redirect_output(char *args[], int number_of_arguments) {
 			close(fd);
                         args[i] = NULL;
 			break;
+                }
+                else if ((strcmp(args[i], ">") == 0) && (args[i+1] == NULL)) {
+                        printf("Error: no output file\n");
+                        exit(1);
                 }
         }
 };
@@ -107,6 +116,12 @@ void pipe_handler(char * commands[], int num_pipe, int output_redirection) {
                 int num_args = 0;
                 char *args[CMDLINE_MAX] = {};
                 get_arguments(commands[cmd_num], args, &num_args);
+
+                // if error then going to next iteration
+                if (strcmp(args[0],"|") || strcmp(args[0],">")) {
+                        printf("Error: missing command\n");
+                        continue;
+                }
                 
                 int pip[2];
                 if((num_pipe > 0) & (cmd_num != num_pipe)) {
@@ -187,74 +202,80 @@ void check_for_pipe(char *cmd, char *commands[], int *num_pipe) {
         *num_pipe = i - 1;
 };
 
-// using strtok to check for if cmd required to redirect output
-void check_for_output_redirection(char *cmd, int *is_out_redirect) {
-        int i = 0;
-        char* copied_cmd;
-        copied_cmd = (char*)malloc(CMDLINE_MAX);
-        strcpy(copied_cmd, cmd);
-        // diving function at ">"
-        char *token = strtok(copied_cmd, ">");
-        while (token != NULL ) {
-                // if there is a more than one string that means
-                // output needs to be redirected
-                if (i >= 1) {
-                        // freeing memory here because exiting this function
-                        *is_out_redirect = 1; 
-                        return;
-                }
-                i++;
-                token = strtok(NULL, ">");
-        }
-        free(token);
-        *is_out_redirect = 0;
-};
+// // using strtok to check for if cmd required to redirect output
+// void check_for_output_redirection(char *cmd, int *is_out_redirect) {
+//         int i = 0;
+//         char* copied_cmd;
+//         copied_cmd = (char*)malloc(CMDLINE_MAX);
+//         strcpy(copied_cmd, cmd);
+//         // diving function at ">"
+//         char *token = strtok(copied_cmd, ">");
+//         while (token != NULL ) {
+//                 // if there is a more than one string that means
+//                 // output needs to be redirected
+//                 if (i >= 1) {
+//                         *is_out_redirect = 1; 
+//                         return;
+//                 }
+//                 i++;
+//                 token = strtok(NULL, ">");
+//         }
+//         free(token);
+//         *is_out_redirect = 0;
+// };
 
-// using strtok to check for if cmd required to redirect input
-void check_for_input_redirection(char *cmd, int *is_in_redirect) {
-        int i = 0;
-        char* copied_cmd;
-        copied_cmd = (char*)malloc(CMDLINE_MAX);
-        strcpy(copied_cmd, cmd);
-        // diving cmd from  "<" and if recived more than one string that means
-        // the input for code needs to be redirected
-        char *token = strtok(copied_cmd, "<");
-        while (token != NULL ) {
-                if (i >= 1) {
-                        
-                        *is_in_redirect = 1;
-                        return;
-                }
-                i++;
-                token = strtok(NULL, "<");
-        }
-        free(token);
-        *is_in_redirect = 0;
-};
+// // using strtok to check for if cmd required to redirect input
+// void check_for_input_redirection(char *cmd, int *is_in_redirect) {
+//         int i = 0;
+//         char* copied_cmd;
+//         copied_cmd = (char*)malloc(CMDLINE_MAX);
+//         strcpy(copied_cmd, cmd);
+//         // diving cmd from  "<" and if recived more than one string that means
+//         // the input for code needs to be redirected
+//         char *token = strtok(copied_cmd, "<");
+//         while (token != NULL ) {
+//                 if (i >= 1) {
+//                         *is_in_redirect = 1;
+//                         return;
+//                 }
+//                 i++;
+//                 token = strtok(NULL, "<");
+//         }
+//         free(token);
+//         *is_in_redirect = 0;
+// };
 
 // using this function to add space before and after "<" and ">"
 // so it will be easy to execute code
-void add_spaces(char *cmd) {
-    int i = 0;
-    int k = 0;
-    int size = strlen(cmd);
-    // after adding spaces the new cmd may get longer than CMDLINE_MAX
-    // but for the simplicity of the project using CMDLINE_MAX
-    char new_str[CMDLINE_MAX];
-    while (k < size) {
-        if (cmd[k] == '>' || cmd[k] == '<') {
-            new_str[i++] = ' ';
-            new_str[i++] = cmd[k++];
-            new_str[i++] = ' ';
+void add_spaces(char *cmd, int* is_in_redirect, int* is_out_redirect) {
+        int i = 0;
+        int k = 0;
+        int size = strlen(cmd);
+        // after adding spaces the new cmd may get longer than CMDLINE_MAX
+        // but for the simplicity of the project using CMDLINE_MAX
+        char new_str[CMDLINE_MAX];
+        while (k < size) {
+                if (cmd[k] == '>' || cmd[k] == '<') {
+                        if (cmd[k] == '>'){
+                                *is_out_redirect = 1;
+                        
+                        }
+                        printf("is_out_redirect %d\n", *is_out_redirect);   
+                        if (cmd[k] == '<') {
+                                *is_in_redirect = 1;
+                        }
+                        new_str[i++] = ' ';
+                        new_str[i++] = cmd[k++];
+                        new_str[i++] = ' ';
+                }
+                else {
+                new_str[i++] = cmd[k++];
+                }
         }
-        else {
-            new_str[i++] = cmd[k++];
-        }
-    }
-    new_str[i++] = '\0';
-    // coping new_str over cmd
-    // now cmd has ">" and "<" saparated by spaces
-    strcpy(cmd, new_str);
+        new_str[i++] = '\0';
+        // coping new_str over cmd
+        // now cmd has ">" and "<" saparated by spaces
+        strcpy(cmd, new_str);
 }
 
 //  this function executes functions of extra feature called "Directory stack"
@@ -347,7 +368,7 @@ int main(void) {
                 // making copy of cmd becuase going to edit cmd
                 strcpy(copy_cmd, cmd);
                 // adding spaced so get_arguments can easily saperate arguments
-                add_spaces(cmd);
+                add_spaces(cmd, &is_in_redirect, &is_out_redirect);
                 get_arguments(cmd, args, &num_arguments);
 
                 /* Builtin command */
@@ -359,7 +380,9 @@ int main(void) {
                 else if (strcmp(args[0], "cd") == 0 && args[1] != NULL) {
                         // args[1] is new location also making sure that it is not NULL to avoid error
                         if (chdir(args[1]) == -1) {       // error managment
-                                // perror("chdir");
+                                if(errno == EACCES) {
+                                        printf("Permission denied.\n");
+                                }
                         }
                         printf("%s\n", getcwd(NULL, CMDLINE_MAX));
                 }
@@ -387,12 +410,14 @@ int main(void) {
                 else {
                         // chile process
                         check_for_pipe(cmd, commands, &num_pipe);               // checking for pipes
-                        check_for_output_redirection(cmd, &is_out_redirect);    // checking for output redirection
-                        check_for_input_redirection(cmd, &is_in_redirect);      // checking for input redirection
+                        // check_for_output_redirection(cmd, &is_out_redirect);    // checking for output redirection
+                        // check_for_input_redirection(cmd, &is_in_redirect);      // checking for input redirection
                         
                         // executing cmd with and without pipe differently
                         if (num_pipe == 0) {
+                                printf("is_out_redirect %d\n", is_out_redirect);
                                 if (is_out_redirect) {
+                                       
                                         // changing output fd if cmd has ">"
                                         redirect_output(args, num_arguments);
                                 }

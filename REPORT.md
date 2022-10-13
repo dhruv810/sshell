@@ -2,6 +2,8 @@
 ### Dhruv Fadadu
 ### Ali Osmani
 #
+['lint-maximum-line-length', 80]
+
 We started the project by following the suggested work phase. We used to provide links to understand the starter code and start the project. We started the project since the first day it became available to finished it on time.
 
 After understanding the source code, we started by writing “Makefile”. We used the following YouTube video to understand how “Makefile” works.
@@ -44,6 +46,12 @@ We are using the check_for_output_redirection, check_for_input_redirection funct
 
 At the end of the project, we realized that `get_arguments()` could be used to check command for input and/or output redirection but because of time constraints we could not implement it.
 
+- PIPE
 
+Pipe was the hadest part in this project. We had to use lecture slides and more than 10 youtube videos. But the one that was helpful is listed below.
 
+- https://www.youtube.com/watch?v=Mqb2dVRe0uo
 
+We started pipe by splitting the command from '|' and saving it in an array. Then we wrote a code that is similar to the one in video to execute each command in a loop.
+
+At the end of the project, while writing the report we went of the assignment and realized that we didnt manage the error as we supposed to, so we did error managment at the end of assignment.
