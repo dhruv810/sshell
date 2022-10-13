@@ -260,7 +260,7 @@ void add_spaces(char *cmd, int* is_in_redirect, int* is_out_redirect) {
                                 *is_out_redirect = 1;
                         
                         }
-                        printf("is_out_redirect %d\n", *is_out_redirect);   
+                       
                         if (cmd[k] == '<') {
                                 *is_in_redirect = 1;
                         }
@@ -415,9 +415,7 @@ int main(void) {
                         
                         // executing cmd with and without pipe differently
                         if (num_pipe == 0) {
-                                printf("is_out_redirect %d\n", is_out_redirect);
                                 if (is_out_redirect) {
-                                       
                                         // changing output fd if cmd has ">"
                                         redirect_output(args, num_arguments);
                                 }
