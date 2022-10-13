@@ -1,13 +1,16 @@
 # SSHELL
+
 ### Dhruv Fadadu
+
 ### Ali Osmani
+
 #
 
 We started the project by following the suggested work phase. We used to provide links to understand the starter code and start the project. We started the project since the first day it became available to finished it on time.
 
 After understanding the source code, we started by writing “Makefile”. We used the following YouTube video to understand how “Makefile” works.
 
-[- https://www.youtube.com/watch?v=aw9wHbFTnAQ](https://)
+- https://www.youtube.com/watch?v=aw9wHbFTnAQ
 
 We have watched many videos to finish the project, but we are going to link only videos that were useful.
 
@@ -17,7 +20,7 @@ We tested the Makefile on the source code, so it was easy to implemnt since ther
 
 For the next part, we needed to extract arguments from string command. For which we used online C compiler to test that part individually and later implemented on the project.
 
-- https://www.onlinegdb.com/online_c_compiler
+- <https://www.onlinegdb.com/online_c_compiler>
 
 We wanted to make sure that our code is working before implementing it on the project. So, we used online compiler to test many functions before writing on the project. Some of which are following
 
@@ -36,9 +39,9 @@ At low-level we were able to implement all functions easily but at high-level th
 
 Writing the `get_arguments()` was complicated but once we found the following way to split the command, we finished it in couple minutes. It is an amazing website that allowed us to write and test the function on their website.
 
-- https://www.educative.io/answers/splitting-a-string-using-strtok-in-c
+- <https://www.educative.io/answers/splitting-a-string-using-strtok-in-c>
 
-Later we used the same methods to implement `check_for_pipe`, `check_for_output_redirection`, and `check_for_input_redirection.` 
+Later we used the same methods to implement `check_for_pipe`, `check_for_output_redirection`, and `check_for_input_redirection.`
 
 At phase 4 we decided to add spaces arround the '>' so we can use the `get_arguments()` function without changing it.
 
@@ -50,14 +53,13 @@ We are using the `check_for_output_redirection`, `check_for_input_redirection` f
 
 In these function, we divide the command by the '<' and '>', and if we get more than one string that mean command has a output redirection and/or input redirection.
 
-
 **At the end of the project, we realized that `get_arguments()` could be used to check command for input and/or output redirection but because of time constraints we could not implement it.**
 
 ---
 
 Pipe was the hadest part in this project. We had to use lecture slides and more than 10 youtube videos. But the one that was helpful is listed below.
 
-- https://www.youtube.com/watch?v=Mqb2dVRe0uo
+- <https://www.youtube.com/watch?v=Mqb2dVRe0uo>
 
 We started pipe by splitting the command from '|' and saving it in an array. Then we wrote a code that is similar to the one in the video to execute each command in a loop. Code had more detailed explanations.
 
