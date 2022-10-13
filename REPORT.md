@@ -2,7 +2,6 @@
 ### Dhruv Fadadu
 ### Ali Osmani
 #
-['lint-maximum-line-length', 80]
 
 We started the project by following the suggested work phase. We used to provide links to understand the starter code and start the project. We started the project since the first day it became available to finished it on time.
 
@@ -36,7 +35,7 @@ Writing the `get_arguments()` was complicated but once we found the following wa
 
 - https://www.educative.io/answers/splitting-a-string-using-strtok-in-c
 
-Later we used the same methods to implement check_for_pipe check_for_output_redirection, and check_for_input_redirection functions. 
+Later we used the same methods to implement `check_for_pipe`, `check_for_output_redirection`, and `check_for_input_redirection.` 
 
 At phase 4 we decided to add spaces arround the '>' so we can use the `get_arguments()` function without changing it.
 
@@ -50,8 +49,8 @@ At the end of the project, we realized that `get_arguments()` could be used to c
 
 Pipe was the hadest part in this project. We had to use lecture slides and more than 10 youtube videos. But the one that was helpful is listed below.
 
-- https://www.youtube.com/watch?v=Mqb2dVRe0uo
+- <a https://www.youtube.com/watch?v=Mqb2dVRe0uo  /></a>
 
 We started pipe by splitting the command from '|' and saving it in an array. Then we wrote a code that is similar to the one in video to execute each command in a loop.
 
-At the end of the project, while writing the report we went of the assignment and realized that we didnt manage the error as we supposed to, so we did error managment at the end of assignment.
+At the end of the project, while writing the report we went of the assignment and realized that we didnt manage the error as we supposed to. Because of limited time we could't implement it.
