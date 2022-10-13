@@ -119,7 +119,7 @@ void pipe_handler(char * commands[], int num_pipe, int output_redirection) {
 
                 // if error then going to next iteration
                 if (strcmp(args[0],"|") || strcmp(args[0],">")) {
-                        fprint(stderr, "Error: missing command");
+                        fprintf(stderr, "Error: missing command");
                         continue;
                 }
                 
