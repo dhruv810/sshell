@@ -280,7 +280,7 @@ int directory_stack(char *dirs[], char *cmd, char *location, int *num_dirs) {
         else if (strcmp(cmd, "popd") == 0) {
                 if (*num_dirs == 1) {   // if there's only one directory, then it is current working directory
                                         // so not removing it
-                        printf("%s\n", getcwd(NULL, CMDLINE_MAX));
+                        printf("Error: directory stack empty\n");
                         // returning 1 because removing current working directory is error
                         // not so sure about this 
                         // maybe it should be 0 because executing as it supposed to do so
